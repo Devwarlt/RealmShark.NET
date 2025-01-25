@@ -22,7 +22,7 @@
     <Folder Include="packets\packetcapture\sniff\assembly\" />
     <Folder Include="packets\packetcapture\sniff\gui\" />
     <Folder Include="packets\packetcapture\sniff\netpackets\" />
-    <Folder Include="Packets\reader\" />
+    <Folder Include="packets\reader\" />
   </ItemGroup>
 
 </Project>
