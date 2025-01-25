@@ -9,14 +9,12 @@
   <ItemGroup>
     <Folder Include="assets\flatbuffer\" />
     <Folder Include="assets\resextractor\" />
-    <Folder Include="util\" />
     <Folder Include="packets\data\enums\" />
     <Folder Include="packets\incoming\arena\" />
     <Folder Include="packets\incoming\ip\" />
     <Folder Include="packets\incoming\pets\" />
     <Folder Include="packets\outgoing\arena\" />
     <Folder Include="packets\outgoing\pets\" />
-    <Folder Include="packets\packetcapture\encryption\" />
     <Folder Include="packets\packetcapture\logger\" />
     <Folder Include="packets\packetcapture\register\" />
     <Folder Include="packets\packetcapture\pconstructor\" />
