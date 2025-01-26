@@ -24,7 +24,7 @@ The RealmShark library written in C# to assist .NET projects related to the RotM
 - [RealmEye](https://www.realmeye.com/) - sprite assets and in-game information
 
 [license]: /LICENSE
-[license-badge]: https://img.shields.io/badge/GPL%203.0-gray?style=plastic
+[license-badge]: https://img.shields.io/badge/GPL%20v3.0-gray?style=plastic
 [latest]: https://github.com/Devwarlt/realmshark.net/releases/latest
 [size-badge]: https://img.shields.io/github/repo-size/Devwarlt/realmshark.net?style=plastic
 [net-8-framework-badge]: https://img.shields.io/badge/%20-8.0%2B-512BD4?logo=.net&style=plastic
