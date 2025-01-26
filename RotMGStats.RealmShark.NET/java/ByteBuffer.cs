@@ -21,6 +21,27 @@ namespace RotMGStats.RealmShark.NET.java
         }
 
         /// <summary>
+        /// Gets the current capacity of the buffer.
+        /// </summary>
+        public int Capacity => buffer.Length;
+
+        /// <summary>
+        /// Gets or sets the current position in the buffer.
+        /// </summary>
+        public int Position
+        {
+            get { return position; }
+            set
+            {
+                if (value < 0 || value > buffer.Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), "Position must be within the bounds of the buffer.");
+                }
+                position = value;
+            }
+        }
+
+        /// <summary>
         /// Puts a byte into the buffer at the current position.
         /// </summary>
         /// <param name="value">The byte value to put into the buffer.</param>
