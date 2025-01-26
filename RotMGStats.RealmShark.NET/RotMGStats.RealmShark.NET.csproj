@@ -17,7 +17,6 @@
   <ItemGroup>
     <Folder Include="assets\flatbuffer\" />
     <Folder Include="assets\resextractor\" />
-    <Folder Include="packets\data\enums\" />
     <Folder Include="packets\incoming\arena\" />
     <Folder Include="packets\incoming\ip\" />
     <Folder Include="packets\incoming\pets\" />
@@ -27,10 +26,7 @@
     <Folder Include="packets\packetcapture\register\" />
     <Folder Include="packets\packetcapture\pconstructor\" />
     <Folder Include="packets\packetcapture\sniff\ardikars\" />
-    <Folder Include="packets\packetcapture\sniff\assembly\" />
     <Folder Include="packets\packetcapture\sniff\gui\" />
-    <Folder Include="packets\packetcapture\sniff\netpackets\" />
-    <Folder Include="packets\reader\" />
   </ItemGroup>
 
 </Project>
