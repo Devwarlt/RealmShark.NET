@@ -2,22 +2,33 @@
 
 namespace RotMGStats.RealmShark.NET.java
 {
-    /// <summary>
-    /// A class that provides functionality similar to Java's ByteBuffer.
-    /// </summary>
     public class ByteBuffer
     {
         private byte[] buffer;
         private int position;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ByteBuffer"/> class with the specified capacity.
+        /// Initializes a new instance of the <see cref="ByteBuffer"/> class with the specified byte array.
         /// </summary>
-        /// <param name="capacity">The initial capacity of the buffer.</param>
-        public ByteBuffer(int capacity)
+        /// <param name="buffer">The byte array to wrap.</param>
+        public ByteBuffer(byte[] buffer)
         {
-            buffer = new byte[capacity];
-            position = 0;
+            this.buffer = buffer;
+            this.position = 0;
+        }
+
+        /// <summary>
+        /// Gets or sets the current position in the buffer.
+        /// </summary>
+        public int Position
+        {
+            get => position;
+            set
+            {
+                if (value < 0 || value > buffer.Length)
+                    throw new ArgumentOutOfRangeException(nameof(value), "Position out of range");
+                position = value;
+            }
         }
 
         /// <summary>
@@ -26,119 +37,120 @@ namespace RotMGStats.RealmShark.NET.java
         public int Capacity => buffer.Length;
 
         /// <summary>
-        /// Gets or sets the current position in the buffer.
+        /// Converts the buffer to a byte array.
         /// </summary>
-        public int Position
+        /// <returns>The byte array representation of the buffer.</returns>
+        public byte[] ToArray()
         {
-            get { return position; }
-            set
+            byte[] array = new byte[buffer.Length];
+            Array.Copy(buffer, array, buffer.Length);
+            return array;
+        }
+
+        /// <summary>
+        /// Ensures the buffer has the specified capacity.
+        /// </summary>
+        /// <param name="minCapacity">The minimum capacity required.</param>
+        public void EnsureCapacity(int minCapacity)
+        {
+            if (minCapacity > buffer.Length)
             {
-                if (value < 0 || value > buffer.Length)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value), "Position must be within the bounds of the buffer.");
-                }
-                position = value;
+                int newCapacity = Math.Max(buffer.Length * 2, minCapacity);
+                byte[] newBuffer = new byte[newCapacity];
+                Array.Copy(buffer, newBuffer, buffer.Length);
+                buffer = newBuffer;
             }
         }
 
         /// <summary>
-        /// Puts a byte into the buffer at the current position.
-        /// </summary>
-        /// <param name="value">The byte value to put into the buffer.</param>
-        public void Put(byte value)
-        {
-            EnsureCapacity(1);
-            buffer[position++] = value;
-        }
-
-        /// <summary>
-        /// Puts an array of bytes into the buffer starting at the current position.
-        /// </summary>
-        /// <param name="src">The byte array to put into the buffer.</param>
-        public void Put(byte[] src)
-        {
-            EnsureCapacity(src.Length);
-            Array.Copy(src, 0, buffer, position, src.Length);
-            position += src.Length;
-        }
-
-        /// <summary>
-        /// Puts an integer into the buffer at the current position.
-        /// </summary>
-        /// <param name="value">The integer value to put into the buffer.</param>
-        public void PutInt(int value)
-        {
-            EnsureCapacity(4);
-            buffer[position++] = (byte)(value >> 24);
-            buffer[position++] = (byte)(value >> 16);
-            buffer[position++] = (byte)(value >> 8);
-            buffer[position++] = (byte)value;
-        }
-
-        /// <summary>
-        /// Gets a byte from the buffer at the current position.
+        /// Gets the byte value at the current position and advances the position by 1 byte.
         /// </summary>
         /// <returns>The byte value at the current position.</returns>
         public byte Get()
         {
+            if (position >= buffer.Length)
+                throw new IndexOutOfRangeException("Buffer overflow");
+
             return buffer[position++];
         }
 
         /// <summary>
-        /// Gets an array of bytes from the buffer starting at the current position.
+        /// Gets the specified number of bytes from the current position and advances the position.
         /// </summary>
-        /// <param name="length">The number of bytes to get from the buffer.</param>
-        /// <returns>A byte array containing the bytes from the buffer.</returns>
+        /// <param name="length">The number of bytes to get.</param>
+        /// <returns>The byte array from the current position.</returns>
         public byte[] Get(int length)
         {
-            byte[] dst = new byte[length];
-            Array.Copy(buffer, position, dst, 0, length);
+            if (position + length > buffer.Length)
+                throw new IndexOutOfRangeException("Buffer overflow");
+
+            byte[] result = new byte[length];
+            Array.Copy(buffer, position, result, 0, length);
             position += length;
-            return dst;
-        }
-
-        /// <summary>
-        /// Gets an integer from the buffer at the current position.
-        /// </summary>
-        /// <returns>The integer value at the current position.</returns>
-        public int GetInt()
-        {
-            int value = (buffer[position++] << 24) |
-                        (buffer[position++] << 16) |
-                        (buffer[position++] << 8) |
-                        buffer[position++];
-            return value;
-        }
-
-        /// <summary>
-        /// Resets the position to zero.
-        /// </summary>
-        public void Flip()
-        {
-            position = 0;
-        }
-
-        /// <summary>
-        /// Returns a byte array containing the data from the buffer up to the current position.
-        /// </summary>
-        /// <returns>A byte array containing the data from the buffer.</returns>
-        public byte[] ToArray()
-        {
-            byte[] result = new byte[position];
-            Array.Copy(buffer, 0, result, 0, position);
             return result;
         }
 
         /// <summary>
-        /// Ensures that the buffer has enough capacity to accommodate additional data.
+        /// Gets the integer value at the current position and advances the position by 4 bytes.
         /// </summary>
-        /// <param name="additionalCapacity">The additional capacity needed.</param>
-        private void EnsureCapacity(int additionalCapacity)
+        /// <returns>The integer value at the current position.</returns>
+        public int GetInt()
         {
-            if (position + additionalCapacity > buffer.Length)
-            {
-                Array.Resize(ref buffer, buffer.Length * 2);
-            }
+            if (position + 4 > buffer.Length)
+                throw new IndexOutOfRangeException("Buffer overflow");
+
+            int value = BitConverter.ToInt32(buffer, position);
+            position += 4;
+            return value;
+        }
+
+        /// <summary>
+        /// Gets the short value at the current position and advances the position by 2 bytes.
+        /// </summary>
+        /// <returns>The short value at the current position.</returns>
+        public short GetShort()
+        {
+            if (position + 2 > buffer.Length)
+                throw new IndexOutOfRangeException("Buffer overflow");
+
+            short value = BitConverter.ToInt16(buffer, position);
+            position += 2;
+            return value;
+        }
+
+        /// <summary>
+        /// Gets the float value at the current position and advances the position by 4 bytes.
+        /// </summary>
+        /// <returns>The float value at the current position.</returns>
+        public float GetFloat()
+        {
+            if (position + 4 > buffer.Length)
+                throw new IndexOutOfRangeException("Buffer overflow");
+
+            float value = BitConverter.ToSingle(buffer, position);
+            position += 4;
+            return value;
+        }
+
+        /// <summary>
+        /// Gets the specified number of bytes from the current position and advances the position.
+        /// </summary>
+        /// <param name="dst">The destination array to copy bytes into.</param>
+        public void Get(byte[] dst)
+        {
+            if (position + dst.Length > buffer.Length)
+                throw new IndexOutOfRangeException("Buffer overflow");
+
+            Array.Copy(buffer, position, dst, 0, dst.Length);
+            position += dst.Length;
+        }
+
+        /// <summary>
+        /// Resets the position to the beginning of the buffer.
+        /// </summary>
+        public void Reset()
+        {
+            position = 0;
         }
     }
 }
