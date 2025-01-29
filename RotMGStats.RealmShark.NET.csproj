@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="NLog" Version="5.3.4" />
     <PackageReference Include="PcapDotNet" Version="0.10.2" />
   </ItemGroup>
 
