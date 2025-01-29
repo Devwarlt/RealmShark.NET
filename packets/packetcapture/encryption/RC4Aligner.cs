@@ -57,7 +57,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.encryption
                     xor = forked.GetXor();
                     if (target[i] != (textData[i + nameOffset] ^ xor))
                     {
-                        continue outer;
+                        goto outer;
                     }
                 }
                 break;
