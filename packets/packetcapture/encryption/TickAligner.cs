@@ -63,7 +63,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.encryption
                     if (CURRENT_TICK != tick)
                     {
                         string error = "Timeline synchronization critical failure, got: " + tick + " expected: " + CURRENT_TICK;
-                        TcpStreamErrorHandler.INSTANCE.DumpData(error);
+                        TcpStreamErrorHandler.Instance.DumpData(error);
                         rc4.Reset();
                         synced = false;
                         TickA = null;
