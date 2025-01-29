@@ -18,15 +18,14 @@
     <Folder Include="assets\flatbuffer\" />
     <Folder Include="assets\resextractor\" />
     <Folder Include="packets\incoming\arena\" />
-    <Folder Include="packets\incoming\ip\" />
     <Folder Include="packets\incoming\pets\" />
     <Folder Include="packets\outgoing\arena\" />
     <Folder Include="packets\outgoing\pets\" />
-    <Folder Include="packets\packetcapture\logger\" />
-    <Folder Include="packets\packetcapture\register\" />
-    <Folder Include="packets\packetcapture\pconstructor\" />
-    <Folder Include="packets\packetcapture\sniff\ardikars\" />
     <Folder Include="packets\packetcapture\sniff\gui\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PcapDotNet" Version="0.10.2" />
   </ItemGroup>
 
 </Project>
