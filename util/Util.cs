@@ -14,6 +14,7 @@ namespace RotMGStats.RealmShark.NET.util
     public class Util
     {
         public static bool SaveLogs { get; set; } = true;
+
         private static Dictionary<string, StreamWriter> printWriter = new Dictionary<string, StreamWriter>();
 
         /// <summary>
