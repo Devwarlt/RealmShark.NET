@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using NLog;
 using PcapDotNet.Core;
 using PcapDotNet.Packets;
 using RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars;
@@ -27,6 +28,8 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff
         private PacketCommunicator[] pcaps;
         private PacketCommunicator realmPcap;
         private bool stop;
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Constructor of a Windows sniffer.
@@ -143,7 +146,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff
             }
             catch (ThreadInterruptedException e)
             {
-                Console.WriteLine(e);
+                logger.Log(LogLevel.Error, e);
             }
         }
 
@@ -192,14 +195,14 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff
                         {
                             Util.PrintLogs(e.Message);
                             Util.PrintLogs(string.Join(", ", packet.Payload));
-                            Console.WriteLine(e);
+                            logger.Log(LogLevel.Error, e);
                         }
                     }
                 }
             }
             catch (ThreadInterruptedException e)
             {
-                Console.WriteLine(e);
+                logger.Log(LogLevel.Error, e);
             }
         }
 
@@ -280,7 +283,8 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff
                 catch (NullReferenceException)
                 {
                     // Network tap is already closed
-                    Console.WriteLine("[X] Error stopping sniffer: sniffer not running.");
+                    logger.Log(LogLevel.Error, "Network tap already closed.");
+                    logger.Log(LogLevel.Info, "Sniffer stopped.");
                 }
             }
         }

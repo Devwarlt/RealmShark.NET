@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using NLog;
 using RotMGStats.RealmShark.NET.java;
 using RotMGStats.RealmShark.NET.packets.packetcapture;
 using RotMGStats.RealmShark.NET.packets.packetcapture.encryption;
@@ -21,6 +22,8 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.pconstructor
         private readonly ROTMGPacketConstructor rotmgConst;
         private readonly TickAligner tickAligner;
         private bool firstNonLargePacket;
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Packet constructor with specific cipher.
@@ -79,7 +82,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.pconstructor
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                logger.Log(LogLevel.Error, e);
             }
         }
 

@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using NLog;
 using PcapDotNet.Core;
 using PcapDotNet.Packets;
 using RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets;
@@ -16,12 +17,14 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
     /// </summary>
     public class NativeBridge
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// for testing
         /// </summary>
         public static void Main(string[] args)
         {
-            Console.WriteLine("clearconsole");
+            logger.Log(LogLevel.Info, "clearconsole");
             PacketCommunicator pcap;
             try
             {
@@ -32,7 +35,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                logger.Log(LogLevel.Error, e);
                 return;
             }
 
@@ -47,13 +50,13 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
                         if (ip4Packet != null)
                         {
                             var tcpPacket = ip4Packet.GetNewTcpPacket();
-                            Console.WriteLine(tcpPacket);
+                            logger.Log(LogLevel.Info, tcpPacket);
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    logger.Log(LogLevel.Error, e);
                 }
             };
             try
@@ -62,7 +65,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                logger.Log(LogLevel.Error, e);
             }
         }
 
@@ -85,7 +88,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                logger.Log(LogLevel.Error, e);
             }
         }
 
@@ -170,7 +173,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    logger.Log(LogLevel.Error, e);
                 }
             }
 

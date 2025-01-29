@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Net;
 using RotMGStats.RealmShark.NET.packets.outgoing;
 using RotMGStats.RealmShark.NET.packets.incoming;
+using NLog;
 
 namespace RotMGStats.RealmShark.NET.packets
 {
@@ -18,6 +19,8 @@ namespace RotMGStats.RealmShark.NET.packets
         private static readonly Dictionary<int, PacketType> PACKET_TYPE = new Dictionary<int, PacketType>();
         private static readonly Dictionary<int, Func<Packet>> PACKET_TYPE_FACTORY = new Dictionary<int, Func<Packet>>();
         private static readonly Dictionary<Type, PacketType> PACKET_CLASS = new Dictionary<Type, PacketType>();
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         static PacketType()
         {
@@ -36,7 +39,7 @@ namespace RotMGStats.RealmShark.NET.packets
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                logger.Log(LogLevel.Error, e);
             }
         }
 

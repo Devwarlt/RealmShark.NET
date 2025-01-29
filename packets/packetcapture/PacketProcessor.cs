@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using Microsoft.Win32;
+using NLog;
 using RotMGStats.RealmShark.NET.java;
 using RotMGStats.RealmShark.NET.packets;
 using RotMGStats.RealmShark.NET.packets.incoming.ip;
@@ -28,8 +29,10 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture
         private readonly PacketConstructor incomingPacketConstructor;
         private readonly PacketConstructor outgoingPacketConstructor;
         private readonly Sniffer sniffer;
-        private readonly PacketLogger logger;
+        private readonly PacketLogger packetLogger;
         private readonly byte[] srcAddr;
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private Thread thread;
 
@@ -42,7 +45,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture
             sniffer = new Sniffer(this);
             incomingPacketConstructor = new PacketConstructor(this, new RC4(RotMGRC4Keys.INCOMING_STRING));
             outgoingPacketConstructor = new PacketConstructor(this, new RC4(RotMGRC4Keys.OUTGOING_STRING));
-            logger = new PacketLogger();
+            packetLogger = new PacketLogger();
             srcAddr = new byte[4];
         }
 
@@ -71,7 +74,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture
         /// </summary>
         public void TapPackets()
         {
-            logger.StartLogger();
+            packetLogger.StartLogger();
             incomingPacketConstructor.StartResets();
             outgoingPacketConstructor.StartResets();
             try
@@ -84,7 +87,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                logger.Log(LogLevel.Error, e);
             }
         }
 
@@ -95,10 +98,10 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture
         /// <param name="srcAddr">Source IP of incoming packets.</param>
         public void IncomingStream(byte[] data, byte[] srcAddr)
         {
-            logger.AddIncoming(data.Length);
+            packetLogger.AddIncoming(data.Length);
             IpEmitter(srcAddr);
             incomingPacketConstructor.Build(data);
-            Register.Instance.EmitLogs(logger);
+            Register.Instance.EmitLogs(packetLogger);
         }
 
         /// <summary>
@@ -108,9 +111,9 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture
         /// <param name="srcAddr">Source IP of outgoing packets.</param>
         public void OutgoingStream(byte[] data, byte[] srcAddr)
         {
-            logger.AddOutgoing(data.Length);
+            packetLogger.AddOutgoing(data.Length);
             outgoingPacketConstructor.Build(data);
-            Register.Instance.EmitLogs(logger);
+            Register.Instance.EmitLogs(packetLogger);
         }
 
         /// <summary>
@@ -141,10 +144,10 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture
         {
             if (!PacketType.ContainsKey(type))
             {
-                Console.Error.WriteLine($"Unknown packet type: {type} Data: {string.Join(", ", data.ToArray())}");
+                logger.Log(LogLevel.Error, $"Unknown packet type: {type} Data: {string.Join(", ", data.ToArray())}");
                 return;
             }
-            logger.AddPacket(type, size);
+            packetLogger.AddPacket(type, size);
             Packet packetType = PacketType.GetPacket(type);
             packetType.SetData(data.ToArray());
             BufferReader pData = new BufferReader(data);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Globalization;
 using RotMGStats.RealmShark.NET.assets;
+using NLog;
 
 namespace RotMGStats.RealmShark.NET.util
 {
@@ -13,6 +14,8 @@ namespace RotMGStats.RealmShark.NET.util
     /// </summary>
     public class Util
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public static bool SaveLogs { get; set; } = true;
 
         private static Dictionary<string, StreamWriter> printWriter = new Dictionary<string, StreamWriter>();
@@ -55,7 +58,7 @@ namespace RotMGStats.RealmShark.NET.util
         {
             if (!SaveLogs)
             {
-                Console.WriteLine(s);
+                logger.Log(LogLevel.Info, s);
             }
             else
             {
@@ -79,7 +82,7 @@ namespace RotMGStats.RealmShark.NET.util
                 }
                 catch (IOException e)
                 {
-                    Console.WriteLine(e);
+                    logger.Log(LogLevel.Error, e);
                     return;
                 }
             }
@@ -237,12 +240,13 @@ namespace RotMGStats.RealmShark.NET.util
             var os = Environment.OSVersion.Platform.ToString().ToLower();
             if (string.IsNullOrEmpty(os))
             {
-                Console.WriteLine("[X] Failed to detect operating system using 'os.name'.");
+                logger.Log(LogLevel.Error, "Failed to detect operating system using 'os.name'.");
                 return "";
             }
             else if (!os.Contains("win") && !os.Contains("mac"))
             {
                 // Unsupported operating system such as most Linux distributions
+                logger.Log(LogLevel.Error, "Unsupported operating system: " + os);
                 return "";
             }
             else

@@ -9,6 +9,7 @@ using RotMGStats.RealmShark.NET.packets.packetcapture.sniff.assembly;
 using RotMGStats.RealmShark.NET.util;
 using RotMGStats.RealmShark.NET.java;
 using System.Net.Sockets;
+using NLog;
 
 namespace RotMGStats.RealmShark.NET.packets.packetcapture.encryption
 {
@@ -27,6 +28,8 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.encryption
         private RC4 rc4Fork;
         private byte[] TickA;
         private int CURRENT_TICK;
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Tick aligner constructor to a RC4 cipher.
@@ -80,7 +83,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.encryption
                     if (TickA != null)
                     {
                         rc4.Reset();
-                        Console.WriteLine("Packet bytes between sync packets: " + packetBytes);
+                        logger.Log(LogLevel.Info, "Packet bytes between sync packets: " + packetBytes);
                         int i = RC4Aligner.SyncCipher(rc4, TickA, tick, packetBytes);
                         if (i != -1)
                         {
@@ -88,7 +91,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.encryption
                             rc4.Skip(packetBytes).Decrypt(tick);
                             rc4.Skip(size - 5 - 4);
                             CURRENT_TICK = Util.DecodeInt(tick);
-                            Console.WriteLine("Synced. offset: " + i + " tick: " + CURRENT_TICK);
+                            logger.Log(LogLevel.Info, "Synced. offset: " + i + " tick: " + CURRENT_TICK);
                         }
                         else
                         {

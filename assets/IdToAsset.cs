@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -22,6 +23,7 @@ namespace RotMGStats.RealmShark.NET.assets
         private Texture[] textures = null;
         private static readonly Dictionary<int, IdToAsset> objectID = new Dictionary<int, IdToAsset>();
         private static readonly Dictionary<int, IdToAsset> tileID = new Dictionary<int, IdToAsset>();
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Constructor for the object resources.
@@ -121,8 +123,8 @@ namespace RotMGStats.RealmShark.NET.assets
             }
             catch (Exception e)
             {
-                Console.WriteLine(lineCheck);
-                Console.WriteLine(e);
+                logger.Log(LogLevel.Error, lineCheck);
+                logger.Log(LogLevel.Error, e);
             }
 
             objectID[-1] = new IdToAsset("", -1, "Unloaded", "Unloaded", "", null, "", "", "Unloaded");
@@ -156,7 +158,7 @@ namespace RotMGStats.RealmShark.NET.assets
                             }
                             else
                             {
-                                Console.WriteLine("Nonuniform tile damage");
+                                logger.Log(LogLevel.Warn, "Nonuniform tile damage");
                             }
                         }
                         string idName = l[3];
@@ -166,7 +168,7 @@ namespace RotMGStats.RealmShark.NET.assets
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                logger.Log(LogLevel.Error, e);
             }
 
             tileID[-1] = new IdToAsset("", -1, -1, "Unknown", "");
@@ -302,7 +304,7 @@ namespace RotMGStats.RealmShark.NET.assets
             }
             catch (Exception)
             {
-                // Console.WriteLine(entity);
+                logger.Log(LogLevel.Error, entity);
             }
             return t;
         }
@@ -402,7 +404,7 @@ namespace RotMGStats.RealmShark.NET.assets
             }
             catch (IndexOutOfRangeException)
             {
-                Console.WriteLine($"{id} {i}");
+                logger.Log(LogLevel.Error, $"{id} {i}");
                 return 0;
             }
         }
