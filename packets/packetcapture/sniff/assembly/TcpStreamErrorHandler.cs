@@ -8,7 +8,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.assembly
 {
     public class TcpStreamErrorHandler
     {
-        public static TcpStreamErrorHandler INSTANCE = new TcpStreamErrorHandler();
+        public static TcpStreamErrorHandler Instance = new TcpStreamErrorHandler();
         private static int index = 0;
         private static int size = 500;
         private static RawPacket[] logList = new RawPacket[size];
