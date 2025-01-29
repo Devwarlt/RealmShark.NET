@@ -15,16 +15,18 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.assembly
         public long SequenceNumber;
         public int IdNumber;
 
-        private readonly PStream packetStream;
-        private readonly PReset packetReset;
+        private readonly Action<byte[], byte[]> packetStream;
+        private readonly Action packetReset;
 
         /// <summary>
         /// Constructor of StreamConstructor which needs a reset class to reset if reset
         /// packet is retrieved and a constructor class to send ordered packets to.
         /// </summary>
-        /// <param name="preset">Reset class if a reset packet is retrieved.</param>
-        /// <param name="pstream">Constructor class to send ordered packets to.</param>
-        public TcpStreamBuilder(PReset preset, PStream pstream)
+        /// <param name="preset">Reset interface used in stream constructor for sending reset
+        /// updates when receiving reset packets.</param>
+        /// <param name="pstream">TCP packet stream interface used to send ordered TCP packets
+        /// with bytes contained in their payload.</param>
+        public TcpStreamBuilder(Action preset, Action<byte[], byte[]> pstream)
         {
             packetReset = preset;
             packetStream = pstream;
@@ -52,7 +54,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.assembly
 
             PacketMap[packet.SequenceNumber] = packet;
 
-            TcpStreamErrorHandler.INSTANCE.ErrorChecker(this);
+            TcpStreamErrorHandler.Instance.ErrorChecker(this);
 
             try
             {
@@ -64,13 +66,13 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.assembly
                     if (packet.Payload != null)
                     {
                         SequenceNumber += packetSeqed.PayloadSize;
-                        packetStream.Stream(packetSeqed.Payload, packetSeqed.Ip4Packet.SrcAddr);
+                        packetStream.Invoke(packetSeqed.Payload, packetSeqed.Ip4Packet.SrcAddr);
                     }
                 }
             }
             catch (Exception e)
             {
-                TcpStreamErrorHandler.INSTANCE.DumpData($"Logging errors caused (by TCP stream builder). \n {string.Join(", ", e.StackTrace)}");
+                TcpStreamErrorHandler.Instance.DumpData($"Logging errors caused (by TCP stream builder). \n {string.Join(", ", e.StackTrace)}");
             }
         }
 
@@ -79,7 +81,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.assembly
         /// </summary>
         public void Reset()
         {
-            packetReset.Reset();
+            packetReset.Invoke();
             PacketMap.Clear();
             SequenceNumber = 0;
             IdNumber = 0;
