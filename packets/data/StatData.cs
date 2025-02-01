@@ -1,5 +1,4 @@
-﻿using System;
-using RotMGStats.RealmShark.NET.packets.data.enums;
+﻿using RotMGStats.RealmShark.NET.packets.data.enums;
 using RotMGStats.RealmShark.NET.packets.reader;
 using RotMGStats.RealmShark.NET.assets;
 

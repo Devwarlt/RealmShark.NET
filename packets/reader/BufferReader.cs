@@ -1,11 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using RotMGStats.RealmShark.NET.packets;
+﻿using System.Text;
 using RotMGStats.RealmShark.NET.util;
 using RotMGStats.RealmShark.NET.java;
-using System.Runtime.InteropServices.JavaScript;
 using RotMGStats.RealmShark.NET.extensions;
 
 namespace RotMGStats.RealmShark.NET.packets.reader

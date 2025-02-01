@@ -1,6 +1,4 @@
-﻿using RotMGStats.RealmShark.NET.packets;
-
-namespace RotMGStats.RealmShark.NET.packets.packetcapture.register
+﻿namespace RotMGStats.RealmShark.NET.packets.packetcapture.register
 {
     /// <summary>
     /// Listener interface used in the registry class matching subscribed classes to packet classes.

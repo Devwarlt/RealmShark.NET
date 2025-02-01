@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using PcapDotNet.Core;
+﻿using System.Collections;
+using SharpPcap.LibPcap;
 
 namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
 {
@@ -9,12 +7,12 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
     /// Directly extracted out of ardikars library to make edits possible.
     /// https://github.com/ardikars/pcap
     /// </summary>
-    public class DefaultAddressIterator : IEnumerator<DeviceAddress>
+    public class DefaultAddressIterator : IEnumerator<PcapAddress>
     {
-        private readonly IList<DeviceAddress> addresses;
+        private readonly IList<PcapAddress> addresses;
         private int currentIndex;
 
-        public DefaultAddressIterator(IList<DeviceAddress> addresses)
+        public DefaultAddressIterator(IList<PcapAddress> addresses)
         {
             this.addresses = addresses ?? throw new ArgumentNullException(nameof(addresses));
             this.currentIndex = -1;
@@ -32,10 +30,10 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
 
         public void Reset()
         {
-            currentIndex = -1;
+            throw new NotSupportedException();
         }
 
-        public DeviceAddress Current
+        public PcapAddress Current
         {
             get
             {

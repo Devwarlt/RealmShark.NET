@@ -1,7 +1,4 @@
 ﻿using NLog;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace RotMGStats.RealmShark.NET.assets
 {
@@ -23,7 +20,7 @@ namespace RotMGStats.RealmShark.NET.assets
         private Texture[] textures = null;
         private static readonly Dictionary<int, IdToAsset> objectID = new Dictionary<int, IdToAsset>();
         private static readonly Dictionary<int, IdToAsset> tileID = new Dictionary<int, IdToAsset>();
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger logger = LogManager.GetLogger(nameof(IdToAsset));
 
         /// <summary>
         /// Constructor for the object resources.

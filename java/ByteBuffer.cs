@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RotMGStats.RealmShark.NET.java
+﻿namespace RotMGStats.RealmShark.NET.java
 {
     public class ByteBuffer
     {

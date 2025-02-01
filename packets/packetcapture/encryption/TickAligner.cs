@@ -1,14 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using RotMGStats.RealmShark.NET.packets.packetcapture.sniff.assembly;
+﻿using RotMGStats.RealmShark.NET.packets.packetcapture.sniff.assembly;
 using RotMGStats.RealmShark.NET.util;
 using RotMGStats.RealmShark.NET.java;
-using System.Net.Sockets;
 using NLog;
 
 namespace RotMGStats.RealmShark.NET.packets.packetcapture.encryption
@@ -29,7 +21,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.encryption
         private byte[] TickA;
         private int CURRENT_TICK;
 
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger logger = LogManager.GetLogger(nameof(TickAligner));
 
         /// <summary>
         /// Tick aligner constructor to a RC4 cipher.

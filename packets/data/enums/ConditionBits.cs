@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace RotMGStats.RealmShark.NET.packets.data.enums
+﻿namespace RotMGStats.RealmShark.NET.packets.data.enums
 {
     /// <summary>
     /// Represents condition bits.

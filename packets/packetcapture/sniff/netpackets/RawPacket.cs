@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets
+﻿namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets
 {
     /// <summary>
     /// Raw packet constructor for retrieving packets off the wire.
@@ -18,9 +15,9 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets
         /// <param name="rawData">The raw data of the packet.</param>
         /// <param name="ts">The timestamp of the packet.</param>
         /// <returns>A new RawPacket instance.</returns>
-        public static RawPacket NewPacket(byte[] rawData, DateTime ts)
+        public static RawPacket NewPacket(byte[] rawData)
         {
-            return new RawPacket(rawData, ts);
+            return new RawPacket(rawData);
         }
 
         /// <summary>
@@ -28,9 +25,9 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets
         /// </summary>
         /// <param name="data">The data of the packet.</param>
         /// <param name="ins">The timestamp of the packet.</param>
-        public RawPacket(byte[] data, DateTime ins)
+        public RawPacket(byte[] data)
         {
-            instant = ins;
+            instant = DateTime.Now;
             payloadSize = data.Length;
             payload = data;
         }

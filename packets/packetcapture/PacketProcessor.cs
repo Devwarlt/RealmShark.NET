@@ -1,12 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using Microsoft.Win32;
-using NLog;
+﻿using NLog;
 using RotMGStats.RealmShark.NET.java;
-using RotMGStats.RealmShark.NET.packets;
 using RotMGStats.RealmShark.NET.packets.incoming.ip;
 using RotMGStats.RealmShark.NET.packets.packetcapture.encryption;
 using RotMGStats.RealmShark.NET.packets.packetcapture.logger;
@@ -32,7 +25,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture
         private readonly PacketLogger packetLogger;
         private readonly byte[] srcAddr;
 
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger logger = LogManager.GetLogger(nameof(PacketProcessor));
 
         private Thread thread;
 
@@ -79,7 +72,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture
             outgoingPacketConstructor.StartResets();
             try
             {
-                sniffer.StartSniffer();
+                sniffer.StartAsync();
             }
             catch (TypeLoadException)
             {

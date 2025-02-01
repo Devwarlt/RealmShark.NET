@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff
+﻿namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff
 {
     /// <summary>
     /// This is a simple Ring buffer made to store buffered packets as captured

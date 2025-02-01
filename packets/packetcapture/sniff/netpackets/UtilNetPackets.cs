@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets
+﻿namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets
 {
     /// <summary>
     /// Util class for Raw, Ether, Ip4 and TCP packets.

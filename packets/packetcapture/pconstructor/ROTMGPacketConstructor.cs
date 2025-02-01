@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using RotMGStats.RealmShark.NET.util;
+﻿using RotMGStats.RealmShark.NET.util;
 
 namespace RotMGStats.RealmShark.NET.packets.packetcapture.pconstructor
 {

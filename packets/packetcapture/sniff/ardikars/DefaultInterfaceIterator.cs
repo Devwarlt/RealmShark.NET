@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using PcapDotNet.Core;
+using SharpPcap;
 
 namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
 {
@@ -9,18 +9,25 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
     /// Directly extracted out of ardikars library to make edits possible.
     /// https://github.com/ardikars/pcap
     /// </summary>
-    public class DefaultInterfaceIterator : IEnumerator<LivePacketDevice>
+    public class DefaultInterfaceIterator : IEnumerator<ICaptureDevice>
     {
-        private LivePacketDevice next;
+        private readonly IList<ICaptureDevice> devices;
+        private int currentIndex;
 
-        public DefaultInterfaceIterator(LivePacketDevice next)
+        public DefaultInterfaceIterator(IList<ICaptureDevice> devices)
         {
-            this.next = next;
+            this.devices = devices ?? throw new ArgumentNullException(nameof(devices));
+            this.currentIndex = -1;
         }
 
         public bool MoveNext()
         {
-            return next != null;
+            if (currentIndex + 1 < devices.Count)
+            {
+                currentIndex++;
+                return true;
+            }
+            return false;
         }
 
         public void Reset()
@@ -28,17 +35,15 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
             throw new NotSupportedException();
         }
 
-        public LivePacketDevice Current
+        public ICaptureDevice Current
         {
             get
             {
-                if (next == null)
+                if (currentIndex < 0 || currentIndex >= devices.Count)
                 {
                     throw new InvalidOperationException();
                 }
-                LivePacketDevice previous = next;
-                next = GetNextDevice(next);
-                return previous;
+                return devices[currentIndex];
             }
         }
 
@@ -47,15 +52,6 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
         public void Dispose()
         {
             // No resources to dispose
-        }
-
-        private LivePacketDevice GetNextDevice(LivePacketDevice currentDevice)
-        {
-            // This method should return the next device in the list.
-            // Since PcapDotNet does not provide a direct way to get the next device,
-            // you need to implement this method based on your specific requirements.
-            // For example, you might maintain a list of devices and return the next one in the list.
-            return null;
         }
     }
 }

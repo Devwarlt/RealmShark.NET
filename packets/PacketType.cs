@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Net;
-using RotMGStats.RealmShark.NET.packets.outgoing;
+﻿using RotMGStats.RealmShark.NET.packets.outgoing;
 using RotMGStats.RealmShark.NET.packets.incoming;
 using NLog;
 
@@ -15,12 +11,13 @@ namespace RotMGStats.RealmShark.NET.packets
     {
         public static readonly PacketType NEWTICK = new PacketType(10, Direction.Incoming, () => new NewTickPacket());
         public static readonly PacketType MOVE = new PacketType(62, Direction.Outgoing, () => new MovePacket());
+        public static readonly PacketType TEXT = new PacketType(44, Direction.Incoming, () => new TextPacket());
 
         private static readonly Dictionary<int, PacketType> PACKET_TYPE = new Dictionary<int, PacketType>();
         private static readonly Dictionary<int, Func<Packet>> PACKET_TYPE_FACTORY = new Dictionary<int, Func<Packet>>();
         private static readonly Dictionary<Type, PacketType> PACKET_CLASS = new Dictionary<Type, PacketType>();
 
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger logger = LogManager.GetLogger(nameof(PacketType));
 
         static PacketType()
         {

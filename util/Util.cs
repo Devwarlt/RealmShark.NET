@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Globalization;
+﻿using System.Text;
 using RotMGStats.RealmShark.NET.assets;
 using NLog;
 
@@ -14,7 +9,7 @@ namespace RotMGStats.RealmShark.NET.util
     /// </summary>
     public class Util
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger logger = LogManager.GetLogger(nameof(Util));
 
         public static bool SaveLogs { get; set; } = true;
 

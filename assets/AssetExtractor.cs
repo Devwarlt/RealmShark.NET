@@ -1,6 +1,4 @@
-﻿using System.Resources;
-
-namespace RotMGStats.RealmShark.NET.assets
+﻿namespace RotMGStats.RealmShark.NET.assets
 {
     /// <summary>
     /// Main loader for assets. If assets are missing or are outdated, extracts the assets from realm resources files.

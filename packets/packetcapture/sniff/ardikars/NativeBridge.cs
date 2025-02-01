@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Metadata;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using NLog;
-using PcapDotNet.Core;
-using PcapDotNet.Packets;
+using SharpPcap;
 using RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets;
+using SharpPcap.LibPcap;
 
 namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
 {
@@ -17,25 +13,32 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
     /// </summary>
     public class NativeBridge
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetLogger(nameof(NativeBridge));
 
         /// <summary>
         /// for testing
         /// </summary>
         public static void Main(string[] args)
         {
-            logger.Log(LogLevel.Info, "clearconsole");
-            PacketCommunicator pcap;
+            logger.Info("clearconsole");
+            ICaptureDevice pcap;
             try
             {
-                var devices = LivePacketDevice.AllLocalMachine;
+                var devices = CaptureDeviceList.Instance;
+                if (devices.Count == 0)
+                {
+                    logger.Error("No devices were found on this machine");
+                    return;
+                }
+
                 var device = devices[0];
-                pcap = device.Open(65536, PacketDeviceOpenAttributes.Promiscuous, 1000);
-                pcap.SetFilter("tcp port 2050");
+                pcap = device;
+                pcap.Open(DeviceModes.Promiscuous, 1000);
+                pcap.Filter = "tcp port 2050";
             }
             catch (Exception e)
             {
-                logger.Log(LogLevel.Error, e);
+                logger.Error(e);
                 return;
             }
 
@@ -50,13 +53,13 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
                         if (ip4Packet != null)
                         {
                             var tcpPacket = ip4Packet.GetNewTcpPacket();
-                            logger.Log(LogLevel.Info, tcpPacket);
+                            logger.Info(tcpPacket);
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    logger.Log(LogLevel.Error, e);
+                    logger.Error(e);
                 }
             };
             try
@@ -65,7 +68,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
             }
             catch (Exception e)
             {
-                logger.Log(LogLevel.Error, e);
+                logger.Error(e);
             }
         }
 
@@ -77,18 +80,40 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
         /// <param name="pcap">Packet capture class wrapping the interface for sniffing the wire.</param>
         /// <param name="packetCount">Number of packets to listen to. -1 loops infinitely.</param>
         /// <param name="listener">Lambda abstract interface used when packets are captured.</param>
-        public static void Loop(PacketCommunicator pcap, int packetCount, PacketListener listener)
+        //public static void Loop(ICaptureDevice pcap, int packetCount, PacketListener listener)
+        //{
+        //    try
+        //    {
+        //        var field = pcap.GetType().GetField("pcapHandle", BindingFlags.NonPublic | BindingFlags.Instance);
+        //        var p = (IntPtr)field.GetValue(pcap);
+
+        //        NativeMappings.pcap_loop(p, packetCount, new GotPacketFuncExecutor(listener, SimpleExecutor.Instance).GotPacket, IntPtr.Zero);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        logger.Error(e);
+        //    }
+        //}
+        public static void Loop(ICaptureDevice pcap, int packetCount, PacketListener listener)
         {
             try
             {
-                var field = pcap.GetType().GetField("_pcapHandle", BindingFlags.NonPublic | BindingFlags.Instance);
-                var p = (IntPtr)field.GetValue(pcap);
-
-                NativeMappings.pcap_loop(p, packetCount, new GotPacketFuncExecutor(listener, SimpleExecutor.Instance).GotPacket, IntPtr.Zero);
+                if (pcap is LibPcapLiveDevice liveDevice)
+                {
+                    var pcapHandle = liveDevice.Handle.DangerousGetHandle();
+                    _ = NativeMappings.pcap_loop(pcapHandle,
+                                                 packetCount,
+                                                 new GotPacketFuncExecutor(listener, SimpleExecutor.Instance).GotPacket,
+                                                 IntPtr.Zero);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Unsupported ICaptureDevice type.");
+                }
             }
             catch (Exception e)
             {
-                logger.Log(LogLevel.Error, e);
+                logger.Error(e);
             }
         }
 
@@ -96,17 +121,17 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
         /// Returns a list of all interfaces on the device.
         /// </summary>
         /// <returns>List of all interfaces on the device.</returns>
-        public static LivePacketDevice[] GetInterfaces()
+        public static ICaptureDevice[] GetInterfaces()
         {
-            var allDevices = LivePacketDevice.AllLocalMachine;
+            var allDevices = CaptureDeviceList.Instance;
             if (allDevices.Count == 0)
-                return Array.Empty<LivePacketDevice>();
+                return Array.Empty<ICaptureDevice>();
 
             return allDevices.ToArray();
         }
 
         /// <summary>
-        /// Delegate for responding to captured packets.
+        /// Interface class for responding to captured packets.
         /// </summary>
         public delegate void PacketListener(RawPacket packet);
 
@@ -146,7 +171,6 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
         {
             private readonly PacketListener listener;
             private readonly TaskScheduler executor;
-            private readonly int timestampPrecision = 1;
 
             public GotPacketFuncExecutor(PacketListener listener, TaskScheduler executor)
             {
@@ -156,7 +180,6 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
 
             public void GotPacket(IntPtr args, IntPtr header, IntPtr packet)
             {
-                var now = BuildTimestamp(header);
                 var len = NativeMappings.pcap_pkthdr.getLen(header);
                 var data = new byte[NativeMappings.pcap_pkthdr.getCaplen(header)];
                 Marshal.Copy(packet, data, 0, data.Length);
@@ -167,33 +190,13 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.ardikars
                     {
                         if (data.Length == len)
                         {
-                            listener(RawPacket.NewPacket(data, now));
+                            listener(new RawPacket(data));
                         }
                     }, CancellationToken.None, TaskCreationOptions.None, executor);
                 }
                 catch (Exception e)
                 {
-                    logger.Log(LogLevel.Error, e);
-                }
-            }
-
-            private DateTime BuildTimestamp(IntPtr header)
-            {
-                long epochSecond = NativeMappings.pcap_pkthdr.getTvSec(header).ToInt64();
-                switch (timestampPrecision)
-                {
-                    case 0:
-                        return DateTimeOffset.FromUnixTimeSeconds(epochSecond)
-                                             .AddMilliseconds(NativeMappings.pcap_pkthdr.getTvUsec(header).ToInt32() / 1000.0)
-                                             .UtcDateTime;
-
-                    case 1:
-                        return DateTimeOffset.FromUnixTimeSeconds(epochSecond)
-                                             .AddTicks(NativeMappings.pcap_pkthdr.getTvUsec(header).ToInt32() * 10)
-                                             .UtcDateTime;
-
-                    default:
-                        throw new InvalidOperationException("Never get here.");
+                    logger.Error(e);
                 }
             }
         }

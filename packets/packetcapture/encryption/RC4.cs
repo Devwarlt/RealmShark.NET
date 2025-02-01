@@ -1,10 +1,3 @@
-using System;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Runtime.InteropServices;
 using RotMGStats.RealmShark.NET.util;
 using RotMGStats.RealmShark.NET.java;
 

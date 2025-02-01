@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using RotMGStats.RealmShark.NET.packets;
+﻿using System.Text;
 
 namespace RotMGStats.RealmShark.NET.packets.packetcapture.logger
 {

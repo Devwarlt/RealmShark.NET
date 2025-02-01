@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using RotMGStats.RealmShark.NET.java.util;
-using RotMGStats.RealmShark.NET.packets;
+﻿using RotMGStats.RealmShark.NET.java.util;
 using RotMGStats.RealmShark.NET.packets.packetcapture.logger;
-using RotMGStats.RealmShark.NET.util;
 
 namespace RotMGStats.RealmShark.NET.packets.packetcapture.register
 {
@@ -58,26 +54,26 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.register
         /// </summary>
         /// <param name="type">The type of class wanting to be subscribed too.</param>
         /// <param name="processor">The lambda needed to trigger what event should happen if packet is received.</param>
-        public void RegisterSingle(PacketType type, IPacketListener<Packet> processor)
+        public void RegisterSingle<T>(PacketType type, IPacketListener<T> processor) where T : Packet
         {
             if (!packetListeners.ContainsKey(type.GetPacketClass()))
             {
                 packetListeners[type.GetPacketClass()] = new List<IPacketListener<Packet>>();
             }
-            packetListeners[type.GetPacketClass()].Add(processor);
+            packetListeners[type.GetPacketClass()].Add((IPacketListener<Packet>)processor);
         }
 
         /// <summary>
         /// Register method to subscribe to all packets that are being received from the network tap.
         /// </summary>
         /// <param name="processor">The lambda needed to trigger what event should happen if packet is received.</param>
-        public void RegisterAll(IPacketListener<Packet> processor)
+        public void RegisterAll<T>(IPacketListener<T> processor) where T : Packet
         {
             if (!packetListeners.ContainsKey(typeof(Packet)))
             {
                 packetListeners[typeof(Packet)] = new List<IPacketListener<Packet>>();
             }
-            packetListeners[typeof(Packet)].Add(processor);
+            packetListeners[typeof(Packet)].Add((IPacketListener<Packet>)processor);
         }
 
         /// <summary>

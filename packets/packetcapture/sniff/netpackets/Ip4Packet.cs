@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets
+﻿namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets
 {
     /// <summary>
     /// Packet building inspired by work done by Pcap4j (https://github.com/kaitoy/pcap4j)

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using RotMGStats.RealmShark.NET.packets;
-using RotMGStats.RealmShark.NET.packets.reader;
+﻿using RotMGStats.RealmShark.NET.packets.reader;
 using RotMGStats.RealmShark.NET.packets.data;
 
 namespace RotMGStats.RealmShark.NET.packets.outgoing

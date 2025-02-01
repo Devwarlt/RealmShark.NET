@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets;
+﻿using RotMGStats.RealmShark.NET.packets.packetcapture.sniff.netpackets;
 
 namespace RotMGStats.RealmShark.NET.packets.packetcapture.sniff.assembly
 {

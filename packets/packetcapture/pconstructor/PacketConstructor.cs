@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using NLog;
+﻿using NLog;
 using RotMGStats.RealmShark.NET.java;
-using RotMGStats.RealmShark.NET.packets.packetcapture;
 using RotMGStats.RealmShark.NET.packets.packetcapture.encryption;
 
 namespace RotMGStats.RealmShark.NET.packets.packetcapture.pconstructor
@@ -23,7 +19,7 @@ namespace RotMGStats.RealmShark.NET.packets.packetcapture.pconstructor
         private readonly TickAligner tickAligner;
         private bool firstNonLargePacket;
 
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger logger = LogManager.GetLogger(nameof(PacketConstructor));
 
         /// <summary>
         /// Packet constructor with specific cipher.

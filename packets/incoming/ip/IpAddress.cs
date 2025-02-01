@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using RotMGStats.RealmShark.NET.packets;
-using RotMGStats.RealmShark.NET.packets.reader;
+﻿using RotMGStats.RealmShark.NET.packets.reader;
 using RotMGStats.RealmShark.NET.util;
 
 namespace RotMGStats.RealmShark.NET.packets.incoming.ip
